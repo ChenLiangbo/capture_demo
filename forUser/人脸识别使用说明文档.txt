@@ -1,0 +1,54 @@
+﻿1,收集原始图片(rawImage)
+    所谓原始图片是指人物正面照图片，希望图片的面部比较端正
+    每个人需要十张照片，照片命名是按照这样的规则的  人物名字汉语拼音全拼+数字.jpg
+    例如  chenliangbo0.jpg  chenliangbo1.jpg … …  chenliangbo8.jpg chenliang9 .jpg
+    这些图片的存取是无需顺序的，将所有的人物的照片都放在这个文件夹下，取名为rawImage
+    
+
+
+2，创建脸谱图片集(faceDataset)
+    在主目录下面新建文件夹，取名faceDataset
+
+
+3,由原始图片生成脸谱图片集
+    在这一步的过程中只需要调用函数      rawImageToFaceDataset(rawImageDirname,faceDatasetDirname)
+    参数说明  rawImageFilename = './ rawImage'  ;  faceDatasetFilenaeme =  './faceDataset'
+此函数位于prepareFaceImage.py里面
+
+4,实例化类MyFaceRecognizer
+  于myFaceRecognizer.py中定义
+   默认选择createEigenFaceRecognizer作为人脸识别的算法和模型创建方法，实例化的时候无需传入参数，可以闯入参数modelSavedFile ='./xmlfile/faceRecognizerModel.xml'（类似） ，作为保存模型的文件，以后就不用每次训练（不用考虑自己训练一次，程序自己处理，但是可以在后台提快速度），在Python-OpenCV中还有两中人脸识别算法，分别是createFisherFaceRecognizer(),createLBPHFaceRecognizer(),算法不同，使用方法完全相同，可以更该试一下
+
+
+5,,加载可以用于预测的图片
+    调用函数myFaceRecognizer.read_images(self,path, newSize=None)
+    此函数位于trainFaceRecognizerModel.py里面
+    path 是脸谱图片集faceDataset的路径，  path = ‘/faceDataset’
+    此函数有两个返回值  X，y,其中X 作为类MyFaceRecognizer.XimageList 的参数传入
+    y作为MyFaceRecognizer.yLabelList的参数传入
+
+6,训练模型
+    只需要调用faceRecognizer.trainModel()就可以，没有返回值
+    如果是从训练好的文件中加载模型数据的话，就可以不用训练了，使用MyFaceRecognizer.loadModel()就可以了，需要事先给定加载文件路径
+
+7,人脸识别精度检测
+    只需要调用faceRecognizer.precisionTest()就可以，有输出提示，返回准确度
+
+8,人脸预测，也就是常说的识别
+    导入一张人脸，cv2.imread(imagefile, cv2.IMREAD_GRAYSCALE)方法导入图片，需要注意将图片的格式转化成为训练样本大小，默认是（112,92），返回标签值和预测可信度
+此处的标签值使用的是保存图片时的名字，也就是图片保存时，数字之前的，也可以将图片的标签和人名建立对应关系
+
+
+9,程序运行
+    运行main.py就可以看到使用例子
+    xmlfile文件夹用于保存xml文件，主要是用来根据全身照片寻找脸的分类器，以及模型预测的分类器
+运行程序getFaceImageWithCapture.py  可以采集来自摄像头的人脸图片，需要给当前人物取名，每个人十张转换为灰度图之后储存在/server/faceImages中
+运行程序updateFaceDataset.py        可以生成人脸识别需要的数据集，里面参数包括原始图片路径，生成数据集文件夹路径server/faceDataset
+运行程序trainFaceRecognizerModel.py 可以进行模型训练，预测精度测试，保存用户名和标签映射，需要指定数据集路径 server/xmlfile/faceModel.xml文件
+运行程序recognizeFaceFromCapture.py 可以识别坐在摄像头前面的人物，不戴眼镜效果是比较好的
+
+根据测试，人脸识别的准确性收到以下主要因素的影响：
+1）戴眼镜的时候识别的误差会比较大，而且戴着眼镜的时候不容易找到脸部位置，这就会很大的影响识别的准确率
+2）光照影响，尽量使采集到的照片集和识别的时候处于相同的光照条件下
+3）最主要的是，数据采集时候的人脸处理算法，应该和人脸检测获得人脸时候的处理算法是一样的。
+

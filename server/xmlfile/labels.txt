@@ -1,0 +1,1 @@
+{"0": "major", "1": "xianshuhui", "2": "wuzeyu", "3": "wangqingqing", "4": "xiaorui", "5": "fanqiangqiang", "6": "wanzhijie", "7": "qiu", "8": "chenliangbo", "9": "jianghaibo"}

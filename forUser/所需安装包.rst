@@ -1,0 +1,4 @@
+1,poster              /[sudo]pip install poster
+2,python-opencv       /sudo apt-get install python-opencv    import cv2
+3,twsited             /pip install twsited
+4,python-numpy        /pip install python-numpy
